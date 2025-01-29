@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Проверяем, существует ли файл
+if [ ! -f textfile.txt ]; then
+  echo "Файл textfile.txt не найден."
+  exit 1
+fi
+
+# Считаем количество строк, слов и символов
+lines=$(wc -l < textfile.txt)
+words=$(wc -w < textfile.txt)
+chars=$(wc -m < textfile.txt)
+
+# Выводим результаты
+echo "Количество строк: $lines"
+echo "Количество слов: $words"
+echo "Количество символов: $chars"
