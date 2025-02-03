@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Konfiguration
+URL="https://example.com"  # Ersetze mit der zu überprüfenden URL
+CHECK_INTERVAL=60  # Überprüfungsintervall in Sekunden
+OLD_HASH_FILE="last_hash.txt"
+
+# Erstelle eine Datei, falls sie nicht existiert
+touch "$OLD_HASH_FILE"
+
+while true; do
+    echo "Überprüfe $URL ..."
+    
+    # Lade den Seiteninhalt und erstelle einen Hash
+    NEW_HASH=$(curl -s "$URL" | md5sum | awk '{ print $1 }')
+    
+    # Lade den vorherigen Hash
+    OLD_HASH=$(cat "$OLD_HASH_FILE")
+
+    if [[ -z "$NEW_HASH" ]]; then
+        echo "Fehler: Konnte die Seite nicht abrufen!"
+    elif [[ "$NEW_HASH" != "$OLD_HASH" ]]; then
+        echo "⚠️ Änderung erkannt auf $URL!"
+        echo "$NEW_HASH" > "$OLD_HASH_FILE"
+        
+        # Hier kann eine Benachrichtigung eingefügt werden (z. B. per E-Mail oder Telegram)
+    else
+        echo "✅ Keine Änderungen erkannt."
+    fi
+
+    # Warte vor der nächsten Überprüfung
+    sleep $CHECK_INTERVAL
+done
